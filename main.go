@@ -41,6 +41,7 @@ func QueryUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("views/*")
+	router.Static("/assets", "./assets")
 
 	router.GET("index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
