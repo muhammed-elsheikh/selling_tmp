@@ -9,6 +9,7 @@ import (
 	"selling_tmp/ent/user"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
@@ -39,13 +40,19 @@ func QueryUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 }
 
 func main() {
+	client, err := ent.Open("mysql", "akkhor:Ma52569522??@tcp(127.0.0.1:3307)/selling_tmp?parseTime=True")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Close()
+
 	router := gin.Default()
 	router.LoadHTMLGlob("views/*")
 	router.Static("/assets", "./assets")
 
-	router.GET("index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"title": "Main website",
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "Welcome to TabNine",
 		})
 	})
 
