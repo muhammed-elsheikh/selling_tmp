@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"selling_tmp/ent"
+	"selling_tmp/ent/migrate"
 	"selling_tmp/ent/user"
 
 	"github.com/gin-gonic/gin"
@@ -45,6 +46,15 @@ func main() {
 		log.Fatal(err)
 	}
 	defer client.Close()
+
+	ctx := context.Background()
+	err = client.Schema.Create(ctx,
+		migrate.WithDropIndex(true),
+		migrate.WithDropColumn(true),
+	)
+	if err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
 
 	router := gin.Default()
 	router.LoadHTMLGlob("views/*")
