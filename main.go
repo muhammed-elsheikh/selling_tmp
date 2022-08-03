@@ -16,8 +16,12 @@ import (
 func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 	u, err := client.User.
 		Create().
-		SetAge(30).
-		SetName("a8m").
+		SetName("Mohammed").
+		SetAge(20).
+		SetEmail("mhdshaikh20403@gmail.com").
+		SetPhone("011525695822").
+		SetNationalID("225566998855").
+		SetLocalAddress("Ahmed Elmenofy Street, Elsalam city, Cairo, Egypt").
 		Save(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed creating user: %w", err)
@@ -29,9 +33,7 @@ func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 func QueryUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 	u, err := client.User.
 		Query().
-		Where(user.Name("a8m")).
-		// `Only` fails if no user found,
-		// or more than 1 user returned.
+		Where(user.Name("Mohammed")).
 		Only(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed querying user: %w", err)
@@ -41,7 +43,7 @@ func QueryUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 }
 
 func main() {
-	client, err := ent.Open("mysql", "akkhor:Ma52569522??@tcp(127.0.0.1:3307)/selling_tmp?parseTime=True")
+	client, err := ent.Open("mysql", "akkhor:Ma52569522??@tcp(localhost:3306)/selling_tmp")
 	if err != nil {
 		log.Fatal(err)
 	}
