@@ -23,14 +23,14 @@ type OrderCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (oc *OrderCreate) SetUserID(s string) *OrderCreate {
-	oc.mutation.SetUserID(s)
+func (oc *OrderCreate) SetUserID(i int) *OrderCreate {
+	oc.mutation.SetUserID(i)
 	return oc
 }
 
 // SetProductID sets the "product_id" field.
-func (oc *OrderCreate) SetProductID(s string) *OrderCreate {
-	oc.mutation.SetProductID(s)
+func (oc *OrderCreate) SetProductID(i int) *OrderCreate {
+	oc.mutation.SetProductID(i)
 	return oc
 }
 
@@ -97,20 +97,6 @@ func (oc *OrderCreate) SetNillableOwnerID(id *int) *OrderCreate {
 // SetOwner sets the "owner" edge to the User entity.
 func (oc *OrderCreate) SetOwner(u *User) *OrderCreate {
 	return oc.SetOwnerID(u.ID)
-}
-
-// SetProductID sets the "product" edge to the Product entity by ID.
-func (oc *OrderCreate) SetProductID(id int) *OrderCreate {
-	oc.mutation.SetProductID(id)
-	return oc
-}
-
-// SetNillableProductID sets the "product" edge to the Product entity by ID if the given value is not nil.
-func (oc *OrderCreate) SetNillableProductID(id *int) *OrderCreate {
-	if id != nil {
-		oc = oc.SetProductID(*id)
-	}
-	return oc
 }
 
 // SetProduct sets the "product" edge to the Product entity.
@@ -228,6 +214,9 @@ func (oc *OrderCreate) check() error {
 	if _, ok := oc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Order.updated_at"`)}
 	}
+	if _, ok := oc.mutation.ProductID(); !ok {
+		return &ValidationError{Name: "product", err: errors.New(`ent: missing required edge "Order.product"`)}
+	}
 	return nil
 }
 
@@ -257,19 +246,11 @@ func (oc *OrderCreate) createSpec() (*Order, *sqlgraph.CreateSpec) {
 	)
 	if value, ok := oc.mutation.UserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: order.FieldUserID,
 		})
 		_node.UserID = value
-	}
-	if value, ok := oc.mutation.ProductID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: order.FieldProductID,
-		})
-		_node.ProductID = value
 	}
 	if value, ok := oc.mutation.Quantity(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -348,7 +329,7 @@ func (oc *OrderCreate) createSpec() (*Order, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.product_orders = &nodes[0]
+		_node.ProductID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

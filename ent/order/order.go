@@ -44,7 +44,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "product" package.
 	ProductInverseTable = "products"
 	// ProductColumn is the table column denoting the product relation/edge.
-	ProductColumn = "product_orders"
+	ProductColumn = "product_id"
 )
 
 // Columns holds all SQL columns for order fields.
@@ -62,7 +62,6 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "orders"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"product_orders",
 	"user_orders",
 }
 

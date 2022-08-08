@@ -109,14 +109,14 @@ func (pc *ProductCreate) SetNillableUpdatedAt(t *time.Time) *ProductCreate {
 	return pc
 }
 
-// AddOrderIDs adds the "orders" edge to the Order entity by IDs.
+// AddOrderIDs adds the "order" edge to the Order entity by IDs.
 func (pc *ProductCreate) AddOrderIDs(ids ...int) *ProductCreate {
 	pc.mutation.AddOrderIDs(ids...)
 	return pc
 }
 
-// AddOrders adds the "orders" edges to the Order entity.
-func (pc *ProductCreate) AddOrders(o ...*Order) *ProductCreate {
+// AddOrder adds the "order" edges to the Order entity.
+func (pc *ProductCreate) AddOrder(o ...*Order) *ProductCreate {
 	ids := make([]int, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
@@ -328,12 +328,12 @@ func (pc *ProductCreate) createSpec() (*Product, *sqlgraph.CreateSpec) {
 		})
 		_node.UpdatedAt = value
 	}
-	if nodes := pc.mutation.OrdersIDs(); len(nodes) > 0 {
+	if nodes := pc.mutation.OrderIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   product.OrdersTable,
-			Columns: []string{product.OrdersColumn},
+			Table:   product.OrderTable,
+			Columns: []string{product.OrderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{

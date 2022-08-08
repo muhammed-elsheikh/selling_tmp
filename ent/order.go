@@ -19,9 +19,9 @@ type Order struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
-	UserID string `json:"user_id,omitempty"`
+	UserID int `json:"user_id,omitempty"`
 	// ProductID holds the value of the "product_id" field.
-	ProductID string `json:"product_id,omitempty"`
+	ProductID int `json:"product_id,omitempty"`
 	// Quantity holds the value of the "quantity" field.
 	Quantity int `json:"quantity,omitempty"`
 	// Total holds the value of the "total" field.
@@ -34,9 +34,8 @@ type Order struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrderQuery when eager-loading is set.
-	Edges          OrderEdges `json:"edges"`
-	product_orders *int
-	user_orders    *int
+	Edges       OrderEdges `json:"edges"`
+	user_orders *int
 }
 
 // OrderEdges holds the relations/edges for other nodes in the graph.
@@ -85,15 +84,11 @@ func (*Order) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case order.FieldTotal:
 			values[i] = new(sql.NullFloat64)
-		case order.FieldID, order.FieldQuantity:
+		case order.FieldID, order.FieldUserID, order.FieldProductID, order.FieldQuantity:
 			values[i] = new(sql.NullInt64)
-		case order.FieldUserID, order.FieldProductID:
-			values[i] = new(sql.NullString)
 		case order.FieldOrderDate, order.FieldCreatedAt, order.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case order.ForeignKeys[0]: // product_orders
-			values[i] = new(sql.NullInt64)
-		case order.ForeignKeys[1]: // user_orders
+		case order.ForeignKeys[0]: // user_orders
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Order", columns[i])
@@ -117,16 +112,16 @@ func (o *Order) assignValues(columns []string, values []interface{}) error {
 			}
 			o.ID = int(value.Int64)
 		case order.FieldUserID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				o.UserID = value.String
+				o.UserID = int(value.Int64)
 			}
 		case order.FieldProductID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field product_id", values[i])
 			} else if value.Valid {
-				o.ProductID = value.String
+				o.ProductID = int(value.Int64)
 			}
 		case order.FieldQuantity:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -159,13 +154,6 @@ func (o *Order) assignValues(columns []string, values []interface{}) error {
 				o.UpdatedAt = value.Time
 			}
 		case order.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field product_orders", value)
-			} else if value.Valid {
-				o.product_orders = new(int)
-				*o.product_orders = int(value.Int64)
-			}
-		case order.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field user_orders", value)
 			} else if value.Valid {
@@ -211,10 +199,10 @@ func (o *Order) String() string {
 	builder.WriteString("Order(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", o.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(o.UserID)
+	builder.WriteString(fmt.Sprintf("%v", o.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("product_id=")
-	builder.WriteString(o.ProductID)
+	builder.WriteString(fmt.Sprintf("%v", o.ProductID))
 	builder.WriteString(", ")
 	builder.WriteString("quantity=")
 	builder.WriteString(fmt.Sprintf("%v", o.Quantity))

@@ -116,16 +116,23 @@ func (uu *UserUpdate) ClearLocalAddress() *UserUpdate {
 }
 
 // SetCardID sets the "card_id" field.
-func (uu *UserUpdate) SetCardID(s string) *UserUpdate {
-	uu.mutation.SetCardID(s)
+func (uu *UserUpdate) SetCardID(i int) *UserUpdate {
+	uu.mutation.ResetCardID()
+	uu.mutation.SetCardID(i)
 	return uu
 }
 
 // SetNillableCardID sets the "card_id" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableCardID(s *string) *UserUpdate {
-	if s != nil {
-		uu.SetCardID(*s)
+func (uu *UserUpdate) SetNillableCardID(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetCardID(*i)
 	}
+	return uu
+}
+
+// AddCardID adds i to the "card_id" field.
+func (uu *UserUpdate) AddCardID(i int) *UserUpdate {
+	uu.mutation.AddCardID(i)
 	return uu
 }
 
@@ -139,25 +146,6 @@ func (uu *UserUpdate) ClearCardID() *UserUpdate {
 func (uu *UserUpdate) SetUpdatedAt(t time.Time) *UserUpdate {
 	uu.mutation.SetUpdatedAt(t)
 	return uu
-}
-
-// SetCardID sets the "card" edge to the Card entity by ID.
-func (uu *UserUpdate) SetCardID(id int) *UserUpdate {
-	uu.mutation.SetCardID(id)
-	return uu
-}
-
-// SetNillableCardID sets the "card" edge to the Card entity by ID if the given value is not nil.
-func (uu *UserUpdate) SetNillableCardID(id *int) *UserUpdate {
-	if id != nil {
-		uu = uu.SetCardID(*id)
-	}
-	return uu
-}
-
-// SetCard sets the "card" edge to the Card entity.
-func (uu *UserUpdate) SetCard(c *Card) *UserUpdate {
-	return uu.SetCardID(c.ID)
 }
 
 // AddOrderIDs adds the "orders" edge to the Order entity by IDs.
@@ -175,15 +163,24 @@ func (uu *UserUpdate) AddOrders(o ...*Order) *UserUpdate {
 	return uu.AddOrderIDs(ids...)
 }
 
+// AddCardIDs adds the "card" edge to the Card entity by IDs.
+func (uu *UserUpdate) AddCardIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddCardIDs(ids...)
+	return uu
+}
+
+// AddCard adds the "card" edges to the Card entity.
+func (uu *UserUpdate) AddCard(c ...*Card) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.AddCardIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
-}
-
-// ClearCard clears the "card" edge to the Card entity.
-func (uu *UserUpdate) ClearCard() *UserUpdate {
-	uu.mutation.ClearCard()
-	return uu
 }
 
 // ClearOrders clears all "orders" edges to the Order entity.
@@ -205,6 +202,27 @@ func (uu *UserUpdate) RemoveOrders(o ...*Order) *UserUpdate {
 		ids[i] = o[i].ID
 	}
 	return uu.RemoveOrderIDs(ids...)
+}
+
+// ClearCard clears all "card" edges to the Card entity.
+func (uu *UserUpdate) ClearCard() *UserUpdate {
+	uu.mutation.ClearCard()
+	return uu
+}
+
+// RemoveCardIDs removes the "card" edge to Card entities by IDs.
+func (uu *UserUpdate) RemoveCardIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveCardIDs(ids...)
+	return uu
+}
+
+// RemoveCard removes "card" edges to Card entities.
+func (uu *UserUpdate) RemoveCard(c ...*Card) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.RemoveCardIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -378,14 +396,21 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.CardID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldCardID,
+		})
+	}
+	if value, ok := uu.mutation.AddedCardID(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: user.FieldCardID,
 		})
 	}
 	if uu.mutation.CardIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Column: user.FieldCardID,
 		})
 	}
@@ -395,41 +420,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Value:  value,
 			Column: user.FieldUpdatedAt,
 		})
-	}
-	if uu.mutation.CardCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   user.CardTable,
-			Columns: []string{user.CardColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: card.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.CardIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   user.CardTable,
-			Columns: []string{user.CardColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: card.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if uu.mutation.OrdersCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -477,6 +467,60 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: order.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.CardCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CardTable,
+			Columns: []string{user.CardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: card.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedCardIDs(); len(nodes) > 0 && !uu.mutation.CardCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CardTable,
+			Columns: []string{user.CardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: card.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.CardIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CardTable,
+			Columns: []string{user.CardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: card.FieldID,
 				},
 			},
 		}
@@ -590,16 +634,23 @@ func (uuo *UserUpdateOne) ClearLocalAddress() *UserUpdateOne {
 }
 
 // SetCardID sets the "card_id" field.
-func (uuo *UserUpdateOne) SetCardID(s string) *UserUpdateOne {
-	uuo.mutation.SetCardID(s)
+func (uuo *UserUpdateOne) SetCardID(i int) *UserUpdateOne {
+	uuo.mutation.ResetCardID()
+	uuo.mutation.SetCardID(i)
 	return uuo
 }
 
 // SetNillableCardID sets the "card_id" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableCardID(s *string) *UserUpdateOne {
-	if s != nil {
-		uuo.SetCardID(*s)
+func (uuo *UserUpdateOne) SetNillableCardID(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetCardID(*i)
 	}
+	return uuo
+}
+
+// AddCardID adds i to the "card_id" field.
+func (uuo *UserUpdateOne) AddCardID(i int) *UserUpdateOne {
+	uuo.mutation.AddCardID(i)
 	return uuo
 }
 
@@ -613,25 +664,6 @@ func (uuo *UserUpdateOne) ClearCardID() *UserUpdateOne {
 func (uuo *UserUpdateOne) SetUpdatedAt(t time.Time) *UserUpdateOne {
 	uuo.mutation.SetUpdatedAt(t)
 	return uuo
-}
-
-// SetCardID sets the "card" edge to the Card entity by ID.
-func (uuo *UserUpdateOne) SetCardID(id int) *UserUpdateOne {
-	uuo.mutation.SetCardID(id)
-	return uuo
-}
-
-// SetNillableCardID sets the "card" edge to the Card entity by ID if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableCardID(id *int) *UserUpdateOne {
-	if id != nil {
-		uuo = uuo.SetCardID(*id)
-	}
-	return uuo
-}
-
-// SetCard sets the "card" edge to the Card entity.
-func (uuo *UserUpdateOne) SetCard(c *Card) *UserUpdateOne {
-	return uuo.SetCardID(c.ID)
 }
 
 // AddOrderIDs adds the "orders" edge to the Order entity by IDs.
@@ -649,15 +681,24 @@ func (uuo *UserUpdateOne) AddOrders(o ...*Order) *UserUpdateOne {
 	return uuo.AddOrderIDs(ids...)
 }
 
+// AddCardIDs adds the "card" edge to the Card entity by IDs.
+func (uuo *UserUpdateOne) AddCardIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddCardIDs(ids...)
+	return uuo
+}
+
+// AddCard adds the "card" edges to the Card entity.
+func (uuo *UserUpdateOne) AddCard(c ...*Card) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.AddCardIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
-}
-
-// ClearCard clears the "card" edge to the Card entity.
-func (uuo *UserUpdateOne) ClearCard() *UserUpdateOne {
-	uuo.mutation.ClearCard()
-	return uuo
 }
 
 // ClearOrders clears all "orders" edges to the Order entity.
@@ -679,6 +720,27 @@ func (uuo *UserUpdateOne) RemoveOrders(o ...*Order) *UserUpdateOne {
 		ids[i] = o[i].ID
 	}
 	return uuo.RemoveOrderIDs(ids...)
+}
+
+// ClearCard clears all "card" edges to the Card entity.
+func (uuo *UserUpdateOne) ClearCard() *UserUpdateOne {
+	uuo.mutation.ClearCard()
+	return uuo
+}
+
+// RemoveCardIDs removes the "card" edge to Card entities by IDs.
+func (uuo *UserUpdateOne) RemoveCardIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveCardIDs(ids...)
+	return uuo
+}
+
+// RemoveCard removes "card" edges to Card entities.
+func (uuo *UserUpdateOne) RemoveCard(c ...*Card) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.RemoveCardIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -882,14 +944,21 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.CardID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldCardID,
+		})
+	}
+	if value, ok := uuo.mutation.AddedCardID(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: user.FieldCardID,
 		})
 	}
 	if uuo.mutation.CardIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Column: user.FieldCardID,
 		})
 	}
@@ -899,41 +968,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Value:  value,
 			Column: user.FieldUpdatedAt,
 		})
-	}
-	if uuo.mutation.CardCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   user.CardTable,
-			Columns: []string{user.CardColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: card.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.CardIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   user.CardTable,
-			Columns: []string{user.CardColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: card.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if uuo.mutation.OrdersCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -981,6 +1015,60 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: order.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.CardCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CardTable,
+			Columns: []string{user.CardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: card.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedCardIDs(); len(nodes) > 0 && !uuo.mutation.CardCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CardTable,
+			Columns: []string{user.CardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: card.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.CardIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CardTable,
+			Columns: []string{user.CardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: card.FieldID,
 				},
 			},
 		}

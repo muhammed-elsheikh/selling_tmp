@@ -7,6 +7,8 @@ import (
 	"selling_tmp/ent"
 	"selling_tmp/ent/migrate"
 
+	_ "selling_tmp/ent/runtime"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )

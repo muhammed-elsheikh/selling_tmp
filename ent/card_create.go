@@ -22,8 +22,8 @@ type CardCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (cc *CardCreate) SetUserID(s string) *CardCreate {
-	cc.mutation.SetUserID(s)
+func (cc *CardCreate) SetUserID(i int) *CardCreate {
+	cc.mutation.SetUserID(i)
 	return cc
 }
 
@@ -212,14 +212,6 @@ func (cc *CardCreate) createSpec() (*Card, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if value, ok := cc.mutation.UserID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: card.FieldUserID,
-		})
-		_node.UserID = value
-	}
 	if value, ok := cc.mutation.Number(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -254,7 +246,7 @@ func (cc *CardCreate) createSpec() (*Card, *sqlgraph.CreateSpec) {
 	}
 	if nodes := cc.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   card.OwnerTable,
 			Columns: []string{card.OwnerColumn},
@@ -269,7 +261,7 @@ func (cc *CardCreate) createSpec() (*Card, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_card = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

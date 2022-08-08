@@ -327,7 +327,7 @@ func (oq *OrderQuery) WithProduct(opts ...func(*ProductQuery)) *OrderQuery {
 // Example:
 //
 //	var v []struct {
-//		UserID string `json:"user_id,omitempty"`
+//		UserID int `json:"user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -356,7 +356,7 @@ func (oq *OrderQuery) GroupBy(field string, fields ...string) *OrderGroupBy {
 // Example:
 //
 //	var v []struct {
-//		UserID string `json:"user_id,omitempty"`
+//		UserID int `json:"user_id,omitempty"`
 //	}
 //
 //	client.Order.Query().
@@ -455,10 +455,7 @@ func (oq *OrderQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Order,
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Order)
 		for i := range nodes {
-			if nodes[i].product_orders == nil {
-				continue
-			}
-			fk := *nodes[i].product_orders
+			fk := nodes[i].ProductID
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -472,7 +469,7 @@ func (oq *OrderQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Order,
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "product_orders" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "product_id" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.Product = n

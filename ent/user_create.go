@@ -83,15 +83,15 @@ func (uc *UserCreate) SetNillableLocalAddress(s *string) *UserCreate {
 }
 
 // SetCardID sets the "card_id" field.
-func (uc *UserCreate) SetCardID(s string) *UserCreate {
-	uc.mutation.SetCardID(s)
+func (uc *UserCreate) SetCardID(i int) *UserCreate {
+	uc.mutation.SetCardID(i)
 	return uc
 }
 
 // SetNillableCardID sets the "card_id" field if the given value is not nil.
-func (uc *UserCreate) SetNillableCardID(s *string) *UserCreate {
-	if s != nil {
-		uc.SetCardID(*s)
+func (uc *UserCreate) SetNillableCardID(i *int) *UserCreate {
+	if i != nil {
+		uc.SetCardID(*i)
 	}
 	return uc
 }
@@ -124,25 +124,6 @@ func (uc *UserCreate) SetNillableUpdatedAt(t *time.Time) *UserCreate {
 	return uc
 }
 
-// SetCardID sets the "card" edge to the Card entity by ID.
-func (uc *UserCreate) SetCardID(id int) *UserCreate {
-	uc.mutation.SetCardID(id)
-	return uc
-}
-
-// SetNillableCardID sets the "card" edge to the Card entity by ID if the given value is not nil.
-func (uc *UserCreate) SetNillableCardID(id *int) *UserCreate {
-	if id != nil {
-		uc = uc.SetCardID(*id)
-	}
-	return uc
-}
-
-// SetCard sets the "card" edge to the Card entity.
-func (uc *UserCreate) SetCard(c *Card) *UserCreate {
-	return uc.SetCardID(c.ID)
-}
-
 // AddOrderIDs adds the "orders" edge to the Order entity by IDs.
 func (uc *UserCreate) AddOrderIDs(ids ...int) *UserCreate {
 	uc.mutation.AddOrderIDs(ids...)
@@ -156,6 +137,21 @@ func (uc *UserCreate) AddOrders(o ...*Order) *UserCreate {
 		ids[i] = o[i].ID
 	}
 	return uc.AddOrderIDs(ids...)
+}
+
+// AddCardIDs adds the "card" edge to the Card entity by IDs.
+func (uc *UserCreate) AddCardIDs(ids ...int) *UserCreate {
+	uc.mutation.AddCardIDs(ids...)
+	return uc
+}
+
+// AddCard adds the "card" edges to the Card entity.
+func (uc *UserCreate) AddCard(c ...*Card) *UserCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uc.AddCardIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -349,7 +345,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := uc.mutation.CardID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: user.FieldCardID,
 		})
@@ -371,25 +367,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		})
 		_node.UpdatedAt = value
 	}
-	if nodes := uc.mutation.CardIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   user.CardTable,
-			Columns: []string{user.CardColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: card.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	if nodes := uc.mutation.OrdersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -401,6 +378,25 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: order.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.CardIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CardTable,
+			Columns: []string{user.CardColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: card.FieldID,
 				},
 			},
 		}

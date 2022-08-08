@@ -11,12 +11,11 @@ var (
 	// CardsColumns holds the columns for the "cards" table.
 	CardsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_id", Type: field.TypeString},
 		{Name: "number", Type: field.TypeString},
 		{Name: "expired_time", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "user_card", Type: field.TypeInt, Unique: true},
+		{Name: "user_id", Type: field.TypeInt},
 	}
 	// CardsTable holds the schema information for the "cards" table.
 	CardsTable = &schema.Table{
@@ -26,7 +25,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "cards_users_card",
-				Columns:    []*schema.Column{CardsColumns[6]},
+				Columns:    []*schema.Column{CardsColumns[5]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -35,14 +34,13 @@ var (
 	// OrdersColumns holds the columns for the "orders" table.
 	OrdersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_id", Type: field.TypeString},
-		{Name: "product_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeInt},
 		{Name: "quantity", Type: field.TypeInt},
 		{Name: "total", Type: field.TypeFloat64},
 		{Name: "order_date", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "product_orders", Type: field.TypeInt, Nullable: true},
+		{Name: "product_id", Type: field.TypeInt},
 		{Name: "user_orders", Type: field.TypeInt, Nullable: true},
 	}
 	// OrdersTable holds the schema information for the "orders" table.
@@ -52,14 +50,14 @@ var (
 		PrimaryKey: []*schema.Column{OrdersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "orders_products_orders",
-				Columns:    []*schema.Column{OrdersColumns[8]},
+				Symbol:     "orders_products_order",
+				Columns:    []*schema.Column{OrdersColumns[7]},
 				RefColumns: []*schema.Column{ProductsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "orders_users_orders",
-				Columns:    []*schema.Column{OrdersColumns[9]},
+				Columns:    []*schema.Column{OrdersColumns[8]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -92,7 +90,7 @@ var (
 		{Name: "phone", Type: field.TypeString, Nullable: true},
 		{Name: "national_id", Type: field.TypeString, Nullable: true},
 		{Name: "local_address", Type: field.TypeString, Nullable: true},
-		{Name: "card_id", Type: field.TypeString, Nullable: true},
+		{Name: "card_id", Type: field.TypeInt, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}

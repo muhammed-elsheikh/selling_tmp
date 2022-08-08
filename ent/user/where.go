@@ -124,7 +124,7 @@ func LocalAddress(v string) predicate.User {
 }
 
 // CardID applies equality check predicate on the "card_id" field. It's identical to CardIDEQ.
-func CardID(v string) predicate.User {
+func CardID(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCardID), v))
 	})
@@ -818,21 +818,21 @@ func LocalAddressContainsFold(v string) predicate.User {
 }
 
 // CardIDEQ applies the EQ predicate on the "card_id" field.
-func CardIDEQ(v string) predicate.User {
+func CardIDEQ(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCardID), v))
 	})
 }
 
 // CardIDNEQ applies the NEQ predicate on the "card_id" field.
-func CardIDNEQ(v string) predicate.User {
+func CardIDNEQ(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldCardID), v))
 	})
 }
 
 // CardIDIn applies the In predicate on the "card_id" field.
-func CardIDIn(vs ...string) predicate.User {
+func CardIDIn(vs ...int) predicate.User {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -849,7 +849,7 @@ func CardIDIn(vs ...string) predicate.User {
 }
 
 // CardIDNotIn applies the NotIn predicate on the "card_id" field.
-func CardIDNotIn(vs ...string) predicate.User {
+func CardIDNotIn(vs ...int) predicate.User {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -866,51 +866,30 @@ func CardIDNotIn(vs ...string) predicate.User {
 }
 
 // CardIDGT applies the GT predicate on the "card_id" field.
-func CardIDGT(v string) predicate.User {
+func CardIDGT(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldCardID), v))
 	})
 }
 
 // CardIDGTE applies the GTE predicate on the "card_id" field.
-func CardIDGTE(v string) predicate.User {
+func CardIDGTE(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldCardID), v))
 	})
 }
 
 // CardIDLT applies the LT predicate on the "card_id" field.
-func CardIDLT(v string) predicate.User {
+func CardIDLT(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldCardID), v))
 	})
 }
 
 // CardIDLTE applies the LTE predicate on the "card_id" field.
-func CardIDLTE(v string) predicate.User {
+func CardIDLTE(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDContains applies the Contains predicate on the "card_id" field.
-func CardIDContains(v string) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDHasPrefix applies the HasPrefix predicate on the "card_id" field.
-func CardIDHasPrefix(v string) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDHasSuffix applies the HasSuffix predicate on the "card_id" field.
-func CardIDHasSuffix(v string) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldCardID), v))
 	})
 }
 
@@ -925,20 +904,6 @@ func CardIDIsNil() predicate.User {
 func CardIDNotNil() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldCardID)))
-	})
-}
-
-// CardIDEqualFold applies the EqualFold predicate on the "card_id" field.
-func CardIDEqualFold(v string) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDContainsFold applies the ContainsFold predicate on the "card_id" field.
-func CardIDContainsFold(v string) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldCardID), v))
 	})
 }
 
@@ -1094,34 +1059,6 @@ func UpdatedAtLTE(v time.Time) predicate.User {
 	})
 }
 
-// HasCard applies the HasEdge predicate on the "card" edge.
-func HasCard() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(CardTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, CardTable, CardColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasCardWith applies the HasEdge predicate on the "card" edge with a given conditions (other predicates).
-func HasCardWith(preds ...predicate.Card) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(CardInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, CardTable, CardColumn),
-		)
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasOrders applies the HasEdge predicate on the "orders" edge.
 func HasOrders() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -1141,6 +1078,34 @@ func HasOrdersWith(preds ...predicate.Order) predicate.User {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(OrdersInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, OrdersTable, OrdersColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasCard applies the HasEdge predicate on the "card" edge.
+func HasCard() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CardTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CardTable, CardColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCardWith applies the HasEdge predicate on the "card" edge with a given conditions (other predicates).
+func HasCardWith(preds ...predicate.Card) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CardInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CardTable, CardColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

@@ -82,14 +82,14 @@ func IDLTE(id int) predicate.Order {
 }
 
 // UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v string) predicate.Order {
+func UserID(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldUserID), v))
 	})
 }
 
 // ProductID applies equality check predicate on the "product_id" field. It's identical to ProductIDEQ.
-func ProductID(v string) predicate.Order {
+func ProductID(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldProductID), v))
 	})
@@ -131,21 +131,21 @@ func UpdatedAt(v time.Time) predicate.Order {
 }
 
 // UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v string) predicate.Order {
+func UserIDEQ(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldUserID), v))
 	})
 }
 
 // UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v string) predicate.Order {
+func UserIDNEQ(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldUserID), v))
 	})
 }
 
 // UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...string) predicate.Order {
+func UserIDIn(vs ...int) predicate.Order {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -162,7 +162,7 @@ func UserIDIn(vs ...string) predicate.Order {
 }
 
 // UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...string) predicate.Order {
+func UserIDNotIn(vs ...int) predicate.Order {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -179,84 +179,49 @@ func UserIDNotIn(vs ...string) predicate.Order {
 }
 
 // UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v string) predicate.Order {
+func UserIDGT(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldUserID), v))
 	})
 }
 
 // UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v string) predicate.Order {
+func UserIDGTE(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldUserID), v))
 	})
 }
 
 // UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v string) predicate.Order {
+func UserIDLT(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldUserID), v))
 	})
 }
 
 // UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v string) predicate.Order {
+func UserIDLTE(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldUserID), v))
 	})
 }
 
-// UserIDContains applies the Contains predicate on the "user_id" field.
-func UserIDContains(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldUserID), v))
-	})
-}
-
-// UserIDHasPrefix applies the HasPrefix predicate on the "user_id" field.
-func UserIDHasPrefix(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldUserID), v))
-	})
-}
-
-// UserIDHasSuffix applies the HasSuffix predicate on the "user_id" field.
-func UserIDHasSuffix(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldUserID), v))
-	})
-}
-
-// UserIDEqualFold applies the EqualFold predicate on the "user_id" field.
-func UserIDEqualFold(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldUserID), v))
-	})
-}
-
-// UserIDContainsFold applies the ContainsFold predicate on the "user_id" field.
-func UserIDContainsFold(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldUserID), v))
-	})
-}
-
 // ProductIDEQ applies the EQ predicate on the "product_id" field.
-func ProductIDEQ(v string) predicate.Order {
+func ProductIDEQ(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldProductID), v))
 	})
 }
 
 // ProductIDNEQ applies the NEQ predicate on the "product_id" field.
-func ProductIDNEQ(v string) predicate.Order {
+func ProductIDNEQ(v int) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldProductID), v))
 	})
 }
 
 // ProductIDIn applies the In predicate on the "product_id" field.
-func ProductIDIn(vs ...string) predicate.Order {
+func ProductIDIn(vs ...int) predicate.Order {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -273,7 +238,7 @@ func ProductIDIn(vs ...string) predicate.Order {
 }
 
 // ProductIDNotIn applies the NotIn predicate on the "product_id" field.
-func ProductIDNotIn(vs ...string) predicate.Order {
+func ProductIDNotIn(vs ...int) predicate.Order {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -286,69 +251,6 @@ func ProductIDNotIn(vs ...string) predicate.Order {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldProductID), v...))
-	})
-}
-
-// ProductIDGT applies the GT predicate on the "product_id" field.
-func ProductIDGT(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldProductID), v))
-	})
-}
-
-// ProductIDGTE applies the GTE predicate on the "product_id" field.
-func ProductIDGTE(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldProductID), v))
-	})
-}
-
-// ProductIDLT applies the LT predicate on the "product_id" field.
-func ProductIDLT(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldProductID), v))
-	})
-}
-
-// ProductIDLTE applies the LTE predicate on the "product_id" field.
-func ProductIDLTE(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldProductID), v))
-	})
-}
-
-// ProductIDContains applies the Contains predicate on the "product_id" field.
-func ProductIDContains(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldProductID), v))
-	})
-}
-
-// ProductIDHasPrefix applies the HasPrefix predicate on the "product_id" field.
-func ProductIDHasPrefix(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldProductID), v))
-	})
-}
-
-// ProductIDHasSuffix applies the HasSuffix predicate on the "product_id" field.
-func ProductIDHasSuffix(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldProductID), v))
-	})
-}
-
-// ProductIDEqualFold applies the EqualFold predicate on the "product_id" field.
-func ProductIDEqualFold(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldProductID), v))
-	})
-}
-
-// ProductIDContainsFold applies the ContainsFold predicate on the "product_id" field.
-func ProductIDContainsFold(v string) predicate.Order {
-	return predicate.Order(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldProductID), v))
 	})
 }
 

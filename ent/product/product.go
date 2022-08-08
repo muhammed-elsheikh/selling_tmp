@@ -27,17 +27,17 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// EdgeOrders holds the string denoting the orders edge name in mutations.
-	EdgeOrders = "orders"
+	// EdgeOrder holds the string denoting the order edge name in mutations.
+	EdgeOrder = "order"
 	// Table holds the table name of the product in the database.
 	Table = "products"
-	// OrdersTable is the table that holds the orders relation/edge.
-	OrdersTable = "orders"
-	// OrdersInverseTable is the table name for the Order entity.
+	// OrderTable is the table that holds the order relation/edge.
+	OrderTable = "orders"
+	// OrderInverseTable is the table name for the Order entity.
 	// It exists in this package in order to avoid circular dependency with the "order" package.
-	OrdersInverseTable = "orders"
-	// OrdersColumn is the table column denoting the orders relation/edge.
-	OrdersColumn = "product_orders"
+	OrderInverseTable = "orders"
+	// OrderColumn is the table column denoting the order relation/edge.
+	OrderColumn = "product_id"
 )
 
 // Columns holds all SQL columns for product fields.

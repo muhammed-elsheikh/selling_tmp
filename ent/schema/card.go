@@ -16,7 +16,7 @@ type Card struct {
 // Fields of the Card.
 func (Card) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("user_id"),
+		field.Int("user_id"),
 		field.String("number"),
 		field.Time("expired_time"),
 		field.Time("created_at").Default(time.Now).Immutable(),
@@ -27,6 +27,6 @@ func (Card) Fields() []ent.Field {
 // Edges of the Card.
 func (Card) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("owner", User.Type).Ref("card").Unique().Required(),
+		edge.From("owner", User.Type).Ref("card").Field("user_id").Unique().Required(),
 	}
 }

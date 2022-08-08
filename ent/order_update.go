@@ -31,14 +31,21 @@ func (ou *OrderUpdate) Where(ps ...predicate.Order) *OrderUpdate {
 }
 
 // SetUserID sets the "user_id" field.
-func (ou *OrderUpdate) SetUserID(s string) *OrderUpdate {
-	ou.mutation.SetUserID(s)
+func (ou *OrderUpdate) SetUserID(i int) *OrderUpdate {
+	ou.mutation.ResetUserID()
+	ou.mutation.SetUserID(i)
+	return ou
+}
+
+// AddUserID adds i to the "user_id" field.
+func (ou *OrderUpdate) AddUserID(i int) *OrderUpdate {
+	ou.mutation.AddUserID(i)
 	return ou
 }
 
 // SetProductID sets the "product_id" field.
-func (ou *OrderUpdate) SetProductID(s string) *OrderUpdate {
-	ou.mutation.SetProductID(s)
+func (ou *OrderUpdate) SetProductID(i int) *OrderUpdate {
+	ou.mutation.SetProductID(i)
 	return ou
 }
 
@@ -99,20 +106,6 @@ func (ou *OrderUpdate) SetOwner(u *User) *OrderUpdate {
 	return ou.SetOwnerID(u.ID)
 }
 
-// SetProductID sets the "product" edge to the Product entity by ID.
-func (ou *OrderUpdate) SetProductID(id int) *OrderUpdate {
-	ou.mutation.SetProductID(id)
-	return ou
-}
-
-// SetNillableProductID sets the "product" edge to the Product entity by ID if the given value is not nil.
-func (ou *OrderUpdate) SetNillableProductID(id *int) *OrderUpdate {
-	if id != nil {
-		ou = ou.SetProductID(*id)
-	}
-	return ou
-}
-
 // SetProduct sets the "product" edge to the Product entity.
 func (ou *OrderUpdate) SetProduct(p *Product) *OrderUpdate {
 	return ou.SetProductID(p.ID)
@@ -143,12 +136,18 @@ func (ou *OrderUpdate) Save(ctx context.Context) (int, error) {
 	)
 	ou.defaults()
 	if len(ou.hooks) == 0 {
+		if err = ou.check(); err != nil {
+			return 0, err
+		}
 		affected, err = ou.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*OrderMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = ou.check(); err != nil {
+				return 0, err
 			}
 			ou.mutation = mutation
 			affected, err = ou.sqlSave(ctx)
@@ -198,6 +197,14 @@ func (ou *OrderUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ou *OrderUpdate) check() error {
+	if _, ok := ou.mutation.ProductID(); ou.mutation.ProductCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Order.product"`)
+	}
+	return nil
+}
+
 func (ou *OrderUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -218,16 +225,16 @@ func (ou *OrderUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ou.mutation.UserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: order.FieldUserID,
 		})
 	}
-	if value, ok := ou.mutation.ProductID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+	if value, ok := ou.mutation.AddedUserID(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: order.FieldProductID,
+			Column: order.FieldUserID,
 		})
 	}
 	if value, ok := ou.mutation.Quantity(); ok {
@@ -362,14 +369,21 @@ type OrderUpdateOne struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (ouo *OrderUpdateOne) SetUserID(s string) *OrderUpdateOne {
-	ouo.mutation.SetUserID(s)
+func (ouo *OrderUpdateOne) SetUserID(i int) *OrderUpdateOne {
+	ouo.mutation.ResetUserID()
+	ouo.mutation.SetUserID(i)
+	return ouo
+}
+
+// AddUserID adds i to the "user_id" field.
+func (ouo *OrderUpdateOne) AddUserID(i int) *OrderUpdateOne {
+	ouo.mutation.AddUserID(i)
 	return ouo
 }
 
 // SetProductID sets the "product_id" field.
-func (ouo *OrderUpdateOne) SetProductID(s string) *OrderUpdateOne {
-	ouo.mutation.SetProductID(s)
+func (ouo *OrderUpdateOne) SetProductID(i int) *OrderUpdateOne {
+	ouo.mutation.SetProductID(i)
 	return ouo
 }
 
@@ -430,20 +444,6 @@ func (ouo *OrderUpdateOne) SetOwner(u *User) *OrderUpdateOne {
 	return ouo.SetOwnerID(u.ID)
 }
 
-// SetProductID sets the "product" edge to the Product entity by ID.
-func (ouo *OrderUpdateOne) SetProductID(id int) *OrderUpdateOne {
-	ouo.mutation.SetProductID(id)
-	return ouo
-}
-
-// SetNillableProductID sets the "product" edge to the Product entity by ID if the given value is not nil.
-func (ouo *OrderUpdateOne) SetNillableProductID(id *int) *OrderUpdateOne {
-	if id != nil {
-		ouo = ouo.SetProductID(*id)
-	}
-	return ouo
-}
-
 // SetProduct sets the "product" edge to the Product entity.
 func (ouo *OrderUpdateOne) SetProduct(p *Product) *OrderUpdateOne {
 	return ouo.SetProductID(p.ID)
@@ -481,12 +481,18 @@ func (ouo *OrderUpdateOne) Save(ctx context.Context) (*Order, error) {
 	)
 	ouo.defaults()
 	if len(ouo.hooks) == 0 {
+		if err = ouo.check(); err != nil {
+			return nil, err
+		}
 		node, err = ouo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*OrderMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = ouo.check(); err != nil {
+				return nil, err
 			}
 			ouo.mutation = mutation
 			node, err = ouo.sqlSave(ctx)
@@ -542,6 +548,14 @@ func (ouo *OrderUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ouo *OrderUpdateOne) check() error {
+	if _, ok := ouo.mutation.ProductID(); ouo.mutation.ProductCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Order.product"`)
+	}
+	return nil
+}
+
 func (ouo *OrderUpdateOne) sqlSave(ctx context.Context) (_node *Order, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -579,16 +593,16 @@ func (ouo *OrderUpdateOne) sqlSave(ctx context.Context) (_node *Order, err error
 	}
 	if value, ok := ouo.mutation.UserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: order.FieldUserID,
 		})
 	}
-	if value, ok := ouo.mutation.ProductID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+	if value, ok := ouo.mutation.AddedUserID(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
-			Column: order.FieldProductID,
+			Column: order.FieldUserID,
 		})
 	}
 	if value, ok := ouo.mutation.Quantity(); ok {

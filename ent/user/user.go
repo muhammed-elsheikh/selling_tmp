@@ -29,19 +29,12 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// EdgeCard holds the string denoting the card edge name in mutations.
-	EdgeCard = "card"
 	// EdgeOrders holds the string denoting the orders edge name in mutations.
 	EdgeOrders = "orders"
+	// EdgeCard holds the string denoting the card edge name in mutations.
+	EdgeCard = "card"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// CardTable is the table that holds the card relation/edge.
-	CardTable = "cards"
-	// CardInverseTable is the table name for the Card entity.
-	// It exists in this package in order to avoid circular dependency with the "card" package.
-	CardInverseTable = "cards"
-	// CardColumn is the table column denoting the card relation/edge.
-	CardColumn = "user_card"
 	// OrdersTable is the table that holds the orders relation/edge.
 	OrdersTable = "orders"
 	// OrdersInverseTable is the table name for the Order entity.
@@ -49,6 +42,13 @@ const (
 	OrdersInverseTable = "orders"
 	// OrdersColumn is the table column denoting the orders relation/edge.
 	OrdersColumn = "user_orders"
+	// CardTable is the table that holds the card relation/edge.
+	CardTable = "cards"
+	// CardInverseTable is the table name for the Card entity.
+	// It exists in this package in order to avoid circular dependency with the "card" package.
+	CardInverseTable = "cards"
+	// CardColumn is the table column denoting the card relation/edge.
+	CardColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.

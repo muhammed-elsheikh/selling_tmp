@@ -39,20 +39,20 @@ type Product struct {
 
 // ProductEdges holds the relations/edges for other nodes in the graph.
 type ProductEdges struct {
-	// Orders holds the value of the orders edge.
-	Orders []*Order `json:"orders,omitempty"`
+	// Order holds the value of the order edge.
+	Order []*Order `json:"order,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// OrdersOrErr returns the Orders value or an error if the edge
+// OrderOrErr returns the Order value or an error if the edge
 // was not loaded in eager-loading.
-func (e ProductEdges) OrdersOrErr() ([]*Order, error) {
+func (e ProductEdges) OrderOrErr() ([]*Order, error) {
 	if e.loadedTypes[0] {
-		return e.Orders, nil
+		return e.Order, nil
 	}
-	return nil, &NotLoadedError{edge: "orders"}
+	return nil, &NotLoadedError{edge: "order"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -142,9 +142,9 @@ func (pr *Product) assignValues(columns []string, values []interface{}) error {
 	return nil
 }
 
-// QueryOrders queries the "orders" edge of the Product entity.
-func (pr *Product) QueryOrders() *OrderQuery {
-	return (&ProductClient{config: pr.config}).QueryOrders(pr)
+// QueryOrder queries the "order" edge of the Product entity.
+func (pr *Product) QueryOrder() *OrderQuery {
+	return (&ProductClient{config: pr.config}).QueryOrder(pr)
 }
 
 // Update returns a builder for updating this Product.

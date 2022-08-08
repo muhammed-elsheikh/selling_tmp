@@ -18,7 +18,7 @@ type Card struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
-	UserID string `json:"user_id,omitempty"`
+	UserID int `json:"user_id,omitempty"`
 	// Number holds the value of the "number" field.
 	Number string `json:"number,omitempty"`
 	// ExpiredTime holds the value of the "expired_time" field.
@@ -29,8 +29,7 @@ type Card struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CardQuery when eager-loading is set.
-	Edges     CardEdges `json:"edges"`
-	user_card *int
+	Edges CardEdges `json:"edges"`
 }
 
 // CardEdges holds the relations/edges for other nodes in the graph.
@@ -61,14 +60,12 @@ func (*Card) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case card.FieldID:
+		case card.FieldID, card.FieldUserID:
 			values[i] = new(sql.NullInt64)
-		case card.FieldUserID, card.FieldNumber:
+		case card.FieldNumber:
 			values[i] = new(sql.NullString)
 		case card.FieldExpiredTime, card.FieldCreatedAt, card.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case card.ForeignKeys[0]: // user_card
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Card", columns[i])
 		}
@@ -91,10 +88,10 @@ func (c *Card) assignValues(columns []string, values []interface{}) error {
 			}
 			c.ID = int(value.Int64)
 		case card.FieldUserID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				c.UserID = value.String
+				c.UserID = int(value.Int64)
 			}
 		case card.FieldNumber:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -119,13 +116,6 @@ func (c *Card) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				c.UpdatedAt = value.Time
-			}
-		case card.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_card", value)
-			} else if value.Valid {
-				c.user_card = new(int)
-				*c.user_card = int(value.Int64)
 			}
 		}
 	}
@@ -161,7 +151,7 @@ func (c *Card) String() string {
 	builder.WriteString("Card(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(c.UserID)
+	builder.WriteString(fmt.Sprintf("%v", c.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("number=")
 	builder.WriteString(c.Number)

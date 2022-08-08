@@ -16,8 +16,8 @@ type Order struct {
 // Fields of the Order.
 func (Order) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("user_id"),
-		field.String("product_id"),
+		field.Int("user_id"),
+		field.Int("product_id"),
 		field.Int("quantity"),
 		field.Float("total"),
 		field.Time("order_date"),
@@ -30,6 +30,6 @@ func (Order) Fields() []ent.Field {
 func (Order) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("owner", User.Type).Unique().Ref("orders"),
-		edge.From("product", Product.Type).Unique().Ref("orders"),
+		edge.From("product", Product.Type).Required().Field("product_id").Unique().Ref("order"),
 	}
 }

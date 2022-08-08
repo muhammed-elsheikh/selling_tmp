@@ -22,7 +22,7 @@ func (User) Fields() []ent.Field {
 		field.String("phone").Optional(),
 		field.String("national_id").Optional(),
 		field.String("local_address").Optional(),
-		field.String("card_id").Optional(),
+		field.Int("card_id").Optional(),
 		field.Time("created_at").Default(time.Now).Immutable(),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
@@ -31,7 +31,7 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("card", Card.Type).Unique(),
 		edge.To("orders", Order.Type),
+		edge.To("card", Card.Type),
 	}
 }

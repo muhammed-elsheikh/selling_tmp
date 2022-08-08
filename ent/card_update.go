@@ -30,8 +30,8 @@ func (cu *CardUpdate) Where(ps ...predicate.Card) *CardUpdate {
 }
 
 // SetUserID sets the "user_id" field.
-func (cu *CardUpdate) SetUserID(s string) *CardUpdate {
-	cu.mutation.SetUserID(s)
+func (cu *CardUpdate) SetUserID(i int) *CardUpdate {
+	cu.mutation.SetUserID(i)
 	return cu
 }
 
@@ -170,13 +170,6 @@ func (cu *CardUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := cu.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: card.FieldUserID,
-		})
-	}
 	if value, ok := cu.mutation.Number(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -200,7 +193,7 @@ func (cu *CardUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if cu.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   card.OwnerTable,
 			Columns: []string{card.OwnerColumn},
@@ -216,7 +209,7 @@ func (cu *CardUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := cu.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   card.OwnerTable,
 			Columns: []string{card.OwnerColumn},
@@ -253,8 +246,8 @@ type CardUpdateOne struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (cuo *CardUpdateOne) SetUserID(s string) *CardUpdateOne {
-	cuo.mutation.SetUserID(s)
+func (cuo *CardUpdateOne) SetUserID(i int) *CardUpdateOne {
+	cuo.mutation.SetUserID(i)
 	return cuo
 }
 
@@ -423,13 +416,6 @@ func (cuo *CardUpdateOne) sqlSave(ctx context.Context) (_node *Card, err error) 
 			}
 		}
 	}
-	if value, ok := cuo.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: card.FieldUserID,
-		})
-	}
 	if value, ok := cuo.mutation.Number(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -453,7 +439,7 @@ func (cuo *CardUpdateOne) sqlSave(ctx context.Context) (_node *Card, err error) 
 	}
 	if cuo.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   card.OwnerTable,
 			Columns: []string{card.OwnerColumn},
@@ -469,7 +455,7 @@ func (cuo *CardUpdateOne) sqlSave(ctx context.Context) (_node *Card, err error) 
 	}
 	if nodes := cuo.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   card.OwnerTable,
 			Columns: []string{card.OwnerColumn},
