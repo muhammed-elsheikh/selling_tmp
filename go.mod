@@ -3,7 +3,7 @@ module selling_tmp
 go 1.16
 
 require (
-	entgo.io/ent v0.10.1
+	entgo.io/ent v0.11.1
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/validator/v10 v10.11.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0
