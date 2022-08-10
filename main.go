@@ -191,6 +191,28 @@ func Do(ctx context.Context, client *ent.Client) error {
 	return nil
 }
 
+func getRoot(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, "Wecome!!")
+}
+
+func getUsers(c *gin.Context) {
+	name := c.Param("Moahammed")
+	msg := name + "welcome"
+	c.IndentedJSON(http.StatusOK, msg)
+}
+
+func getProducts(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, "index1.html")
+}
+
+func getCards(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, "index2.html")
+}
+
+func getOrders(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, "index3.html")
+}
+
 func main() {
 	client, err := ent.Open("mysql", "akkhor:Ma52569522??@tcp(localhost:3306)/selling_tmp")
 	if err != nil {
@@ -206,42 +228,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
+
+	Do(ctx, client)
+
 	router := gin.Default()
-	router.LoadHTMLGlob("views/*")
-	router.Static("/assets", "./assets")
 
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Welcome to TabNine",
-		})
-	})
+	router.GET("/", getRoot)
 
-	router.GET("/index1", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index1.html", gin.H{
-			"title": "Index1 website",
-		})
-	})
-	router.GET("/index2", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index1.html", gin.H{
-			"title": "Index2 website",
-		})
-	})
-	router.GET("/index3", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index1.html", gin.H{
-			"title": "Index3 website",
-		})
-	})
-	router.GET("/index4", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index1.html", gin.H{
-			"title": "Index4 website",
-		})
-	})
-
-	router.GET("/index5", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index1.html", gin.H{
-			"title": "Index5 website",
-		})
-	})
+	router.GET("/users", getUsers)
+	router.GET("/products", getProducts)
+	router.GET("/cards", getCards)
+	router.GET("/orders", getOrders)
 
 	router.Run(":3030")
 }
