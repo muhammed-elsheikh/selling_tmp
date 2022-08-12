@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
+	"selling_tmp/api"
 	"selling_tmp/ent"
 	"selling_tmp/ent/migrate"
 	_ "selling_tmp/ent/runtime"
@@ -191,28 +191,6 @@ func Do(ctx context.Context, client *ent.Client) error {
 	return nil
 }
 
-func getRoot(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, "Wecome!!")
-}
-
-func getUsers(c *gin.Context) {
-	name := c.Param("Moahammed")
-	msg := name + "welcome"
-	c.IndentedJSON(http.StatusOK, msg)
-}
-
-func getProducts(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, "index1.html")
-}
-
-func getCards(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, "index2.html")
-}
-
-func getOrders(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, "index3.html")
-}
-
 func main() {
 	client, err := ent.Open("mysql", "akkhor:Ma52569522??@tcp(localhost:3306)/selling_tmp")
 	if err != nil {
@@ -233,12 +211,7 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/", getRoot)
-
-	router.GET("/users", getUsers)
-	router.GET("/products", getProducts)
-	router.GET("/cards", getCards)
-	router.GET("/orders", getOrders)
+	api.AddRoutes(router)
 
 	router.Run(":3030")
 }
