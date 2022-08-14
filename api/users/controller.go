@@ -7,10 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// get users with params(name, age)
 func getUsers(c *gin.Context) {
-	name := c.Param("Moahammed")
-	msg := name + "welcome"
-	c.IndentedJSON(http.StatusOK, msg)
+	name := c.Param("name")
+	age := c.Param("age")
+	c.JSON(http.StatusOK, gin.H{
+		"name": name,
+		"age":  age,
+	})
 }
 
 func createUser(c *gin.Context) {
@@ -30,6 +34,6 @@ func createUser(c *gin.Context) {
 
 func AddRoutes(parentRoute *gin.Engine) {
 	route := parentRoute.Group("/users")
-	route.GET("/", getUsers)
+	route.GET("/:name/:msg", getUsers)
 	route.POST("", createUser)
 }
