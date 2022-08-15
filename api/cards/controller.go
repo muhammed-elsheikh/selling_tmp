@@ -2,6 +2,7 @@ package cards
 
 import (
 	"net/http"
+	"selling_tmp/ent"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +17,20 @@ func getCards(c *gin.Context) {
 	})
 }
 
+func addCard(c *gin.Context) {
+
+	var card ent.Card
+
+	if err := c.BindJSON(&card); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, card)
+}
+
 func AddRoutes(parentRoute *gin.Engine) {
-	route := parentRoute.Group("/products")
+	route := parentRoute.Group("/cards")
 	route.GET("", getCards)
+	route.POST("", addCard)
 }
