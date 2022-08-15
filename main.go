@@ -213,5 +213,11 @@ func main() {
 
 	api.AddRoutes(router)
 
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{
+			"message": "Not Found!",
+		})
+	})
+
 	router.Run(":3030")
 }
