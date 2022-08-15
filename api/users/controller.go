@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"selling_tmp/db"
+	"selling_tmp/ent"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,8 +33,32 @@ func postUser(c *gin.Context) {
 	})
 }
 
+func register(c *gin.Context) {
+	var inputs *ent.User
+
+	if err := c.ShouldBindJSON(&inputs); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := db.Client.User.Create().
+		SetName(inputs.Name).
+		SetPassword(inputs.Password).
+		SetAge(inputs.Age).
+		SetEmail(inputs.Email).
+		Save(c)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	c.JSON(200, user)
+}
+
 func AddRoutes(parentRoute *gin.Engine) {
 	route := parentRoute.Group("/users")
 	route.GET("/:name/:msg", getUsers)
 	route.POST("/", postUser)
+	route.POST("/register", register)
 }
