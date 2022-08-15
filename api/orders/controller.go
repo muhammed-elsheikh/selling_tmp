@@ -17,6 +17,6 @@ func getorders(c *gin.Context) {
 }
 
 func AddRoutes(parentRoute *gin.Engine) {
-	route := parentRoute.Group("/products")
+	route := parentRoute.Group("/orders")
 	route.GET("", getorders)
 }
