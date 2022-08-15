@@ -3,15 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"selling_tmp/api"
+	"selling_tmp/db"
 	"selling_tmp/ent"
-	"selling_tmp/ent/migrate"
 	_ "selling_tmp/ent/runtime"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func Do(ctx context.Context, client *ent.Client) error {
@@ -192,22 +190,8 @@ func Do(ctx context.Context, client *ent.Client) error {
 }
 
 func main() {
-	client, err := ent.Open("mysql", "akkhor:Ma52569522??@tcp(localhost:3306)/selling_tmp")
-	if err != nil {
-		log.Fatalf("failed connecting to mysql: %v", err)
-	}
-	defer client.Close()
-	ctx := context.Background()
-	err = client.Schema.Create(
-		ctx,
-		migrate.WithDropIndex(true),
-		migrate.WithDropColumn(true),
-	)
-	if err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
-	}
 
-	Do(ctx, client)
+	Do(context.Background(), db.Client)
 
 	router := gin.Default()
 
