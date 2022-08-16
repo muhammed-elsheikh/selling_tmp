@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"selling_tmp/db"
 	"selling_tmp/ent"
+	"selling_tmp/ent/user"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,6 +54,28 @@ func register(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
+
+	c.JSON(200, user)
+}
+
+func login(c *gin.Context) {
+	var inputs *ent.User
+
+	if err := c.ShouldBindJSON(&inputs); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := db.Client.User.
+		Query().
+		Where(user.Email("mhdshaikh20403@gmail.com")).
+		Exist(c)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 	c.JSON(200, user)
 }
 
@@ -61,4 +84,5 @@ func AddRoutes(parentRoute *gin.Engine) {
 	route.GET("/:name/:msg", getUsers)
 	route.POST("/", postUser)
 	route.POST("/register", register)
+	route.POST("/login", login)
 }
