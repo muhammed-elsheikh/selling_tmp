@@ -32,8 +32,12 @@ func init() {
 
 	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DbUser, DbPassword, DbHost, DbPort, DbName)
 	Client, err = ent.Open(Dbdriver, DBURL)
+
 	if err != nil {
-		log.Fatalf("failed connecting to mysql: %v", err)
+		fmt.Println("Cannot connect to database ", Dbdriver)
+		log.Fatal("connection error:", err)
+	} else {
+		fmt.Println("We are connected to the database ", Dbdriver)
 	}
 	defer Client.Close()
 	ctx := context.Background()
