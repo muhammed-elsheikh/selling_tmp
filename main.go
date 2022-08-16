@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"selling_tmp/api"
 	"selling_tmp/db"
-	"selling_tmp/ent"
 	_ "selling_tmp/ent/runtime"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Do(ctx context.Context, client *ent.Client) error {
-	_, err := client.User.
+func Do(ctx context.Context) error {
+	_, err := db.Client.User.
 		Create().
 		SetName("Mohammed").
 		SetAge(20).
@@ -26,7 +25,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating User: %w", err)
 	}
 
-	_, err = client.User.
+	_, err = db.Client.User.
 		Create().
 		SetName("Mr Yasser").
 		SetAge(34).
@@ -38,7 +37,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 	if err != nil {
 		return fmt.Errorf("creating User: %w", err)
 	}
-	_, err = client.User.
+	_, err = db.Client.User.
 		Create().
 		SetName("Omar Abdo").
 		SetAge(15).
@@ -50,7 +49,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 	if err != nil {
 		return fmt.Errorf("creating User: %w", err)
 	}
-	_, err = client.Card.
+	_, err = db.Client.Card.
 		Create().
 		SetOwnerID(1).
 		SetNumber("2563417847").
@@ -59,7 +58,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 	if err != nil {
 		return fmt.Errorf("creating Card: %w", err)
 	}
-	_, err = client.Card.
+	_, err = db.Client.Card.
 		Create().
 		SetUserID(2).
 		SetNumber("4111225554").
@@ -68,7 +67,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 	if err != nil {
 		return fmt.Errorf("creating Card: %w", err)
 	}
-	_, err = client.Card.
+	_, err = db.Client.Card.
 		Create().
 		SetUserID(3).
 		SetNumber("7778889655").
@@ -78,7 +77,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating Card: %w", err)
 	}
 
-	_, err = client.Product.
+	_, err = db.Client.Product.
 		Create().
 		SetName("Table").
 		SetPrice(158.5).
@@ -92,7 +91,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating Product: %w", err)
 	}
 
-	_, err = client.Product.
+	_, err = db.Client.Product.
 		Create().
 		SetName("Chair").
 		SetPrice(99.75).
@@ -106,7 +105,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating Product: %w", err)
 	}
 
-	_, err = client.Product.
+	_, err = db.Client.Product.
 		Create().
 		SetName("Office").
 		SetPrice(122).
@@ -120,7 +119,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating Product: %w", err)
 	}
 
-	_, err = client.Product.
+	_, err = db.Client.Product.
 		Create().
 		SetName("Cup").
 		SetPrice(12.5).
@@ -134,7 +133,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating Product: %w", err)
 	}
 
-	_, err = client.Order.
+	_, err = db.Client.Order.
 		Create().
 		SetOwnerID(3).
 		SetProductID(4).
@@ -147,7 +146,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating Order: %w", err)
 	}
 
-	_, err = client.Order.
+	_, err = db.Client.Order.
 		Create().
 		SetOwnerID(1).
 		SetProductID(3).
@@ -160,7 +159,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating Order: %w", err)
 	}
 
-	_, err = client.Order.
+	_, err = db.Client.Order.
 		Create().
 		SetOwnerID(2).
 		SetProductID(2).
@@ -173,7 +172,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 		return fmt.Errorf("creating Order: %w", err)
 	}
 
-	_, err = client.Order.
+	_, err = db.Client.Order.
 		Create().
 		SetOwnerID(1).
 		SetProductID(1).
@@ -191,7 +190,7 @@ func Do(ctx context.Context, client *ent.Client) error {
 
 func main() {
 
-	Do(context.Background(), db.Client)
+	Do(context.Background())
 
 	router := gin.Default()
 
