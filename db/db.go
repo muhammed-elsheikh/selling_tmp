@@ -30,7 +30,7 @@ func init() {
 	DbName := os.Getenv("DB_NAME")
 	DbPort := os.Getenv("DB_PORT")
 
-	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DbUser, DbPassword, DbHost, DbPort, DbName)
+	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", DbUser, DbPassword, DbHost, DbPort, DbName)
 	Client, err = ent.Open(Dbdriver, DBURL)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func init() {
 		migrate.WithDropColumn(true),
 	)
 	if err != nil {
-		log.Fatalf("failed creating schema resources: %v?parseTime=true", err)
+		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
 }
