@@ -39,7 +39,7 @@ func init() {
 	} else {
 		fmt.Println("We are connected to the database ", Dbdriver)
 	}
-	defer Client.Close()
+
 	ctx := context.Background()
 	err = Client.Schema.Create(
 		ctx,
@@ -47,7 +47,7 @@ func init() {
 		migrate.WithDropColumn(true),
 	)
 	if err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
+		log.Fatalf("failed creating schema resources: %v?parseTime=true", err)
 	}
 
 }
