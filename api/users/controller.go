@@ -68,14 +68,15 @@ func login(c *gin.Context) {
 
 	user, err := db.Client.User.
 		Query().
-		Where(user.Email("mhdshaikh20403@gmail.com")).
-		Exist(c)
+		Where(user.Email(inputs.Email)).
+		First(c)
 
 	if err != nil {
 		fmt.Println(err.Error())
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	c.JSON(200, user)
 }
 
