@@ -251,9 +251,22 @@ func (m *CardMutation) OldExpiredTime(ctx context.Context) (v time.Time, err err
 	return oldValue.ExpiredTime, nil
 }
 
+// ClearExpiredTime clears the value of the "expired_time" field.
+func (m *CardMutation) ClearExpiredTime() {
+	m.expired_time = nil
+	m.clearedFields[card.FieldExpiredTime] = struct{}{}
+}
+
+// ExpiredTimeCleared returns if the "expired_time" field was cleared in this mutation.
+func (m *CardMutation) ExpiredTimeCleared() bool {
+	_, ok := m.clearedFields[card.FieldExpiredTime]
+	return ok
+}
+
 // ResetExpiredTime resets all changes to the "expired_time" field.
 func (m *CardMutation) ResetExpiredTime() {
 	m.expired_time = nil
+	delete(m.clearedFields, card.FieldExpiredTime)
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -515,7 +528,11 @@ func (m *CardMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *CardMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(card.FieldExpiredTime) {
+		fields = append(fields, card.FieldExpiredTime)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -528,6 +545,11 @@ func (m *CardMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *CardMutation) ClearField(name string) error {
+	switch name {
+	case card.FieldExpiredTime:
+		m.ClearExpiredTime()
+		return nil
+	}
 	return fmt.Errorf("unknown Card nullable field %s", name)
 }
 

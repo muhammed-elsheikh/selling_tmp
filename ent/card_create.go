@@ -39,6 +39,14 @@ func (cc *CardCreate) SetExpiredTime(t time.Time) *CardCreate {
 	return cc
 }
 
+// SetNillableExpiredTime sets the "expired_time" field if the given value is not nil.
+func (cc *CardCreate) SetNillableExpiredTime(t *time.Time) *CardCreate {
+	if t != nil {
+		cc.SetExpiredTime(*t)
+	}
+	return cc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (cc *CardCreate) SetCreatedAt(t time.Time) *CardCreate {
 	cc.mutation.SetCreatedAt(t)
@@ -172,9 +180,6 @@ func (cc *CardCreate) check() error {
 	}
 	if _, ok := cc.mutation.Number(); !ok {
 		return &ValidationError{Name: "number", err: errors.New(`ent: missing required field "Card.number"`)}
-	}
-	if _, ok := cc.mutation.ExpiredTime(); !ok {
-		return &ValidationError{Name: "expired_time", err: errors.New(`ent: missing required field "Card.expired_time"`)}
 	}
 	if _, ok := cc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Card.created_at"`)}

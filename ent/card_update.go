@@ -47,6 +47,20 @@ func (cu *CardUpdate) SetExpiredTime(t time.Time) *CardUpdate {
 	return cu
 }
 
+// SetNillableExpiredTime sets the "expired_time" field if the given value is not nil.
+func (cu *CardUpdate) SetNillableExpiredTime(t *time.Time) *CardUpdate {
+	if t != nil {
+		cu.SetExpiredTime(*t)
+	}
+	return cu
+}
+
+// ClearExpiredTime clears the value of the "expired_time" field.
+func (cu *CardUpdate) ClearExpiredTime() *CardUpdate {
+	cu.mutation.ClearExpiredTime()
+	return cu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (cu *CardUpdate) SetUpdatedAt(t time.Time) *CardUpdate {
 	cu.mutation.SetUpdatedAt(t)
@@ -184,6 +198,12 @@ func (cu *CardUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: card.FieldExpiredTime,
 		})
 	}
+	if cu.mutation.ExpiredTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: card.FieldExpiredTime,
+		})
+	}
 	if value, ok := cu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -260,6 +280,20 @@ func (cuo *CardUpdateOne) SetNumber(s string) *CardUpdateOne {
 // SetExpiredTime sets the "expired_time" field.
 func (cuo *CardUpdateOne) SetExpiredTime(t time.Time) *CardUpdateOne {
 	cuo.mutation.SetExpiredTime(t)
+	return cuo
+}
+
+// SetNillableExpiredTime sets the "expired_time" field if the given value is not nil.
+func (cuo *CardUpdateOne) SetNillableExpiredTime(t *time.Time) *CardUpdateOne {
+	if t != nil {
+		cuo.SetExpiredTime(*t)
+	}
+	return cuo
+}
+
+// ClearExpiredTime clears the value of the "expired_time" field.
+func (cuo *CardUpdateOne) ClearExpiredTime() *CardUpdateOne {
+	cuo.mutation.ClearExpiredTime()
 	return cuo
 }
 
@@ -427,6 +461,12 @@ func (cuo *CardUpdateOne) sqlSave(ctx context.Context) (_node *Card, err error) 
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
+			Column: card.FieldExpiredTime,
+		})
+	}
+	if cuo.mutation.ExpiredTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
 			Column: card.FieldExpiredTime,
 		})
 	}

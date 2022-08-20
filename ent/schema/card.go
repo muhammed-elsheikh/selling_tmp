@@ -18,7 +18,7 @@ func (Card) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("user_id"),
 		field.String("number"),
-		field.Time("expired_time"),
+		field.Time("expired_time").Optional(),
 		field.Time("created_at").Default(time.Now).Immutable(),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}

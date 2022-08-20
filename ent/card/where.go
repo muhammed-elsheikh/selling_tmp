@@ -351,6 +351,20 @@ func ExpiredTimeLTE(v time.Time) predicate.Card {
 	})
 }
 
+// ExpiredTimeIsNil applies the IsNil predicate on the "expired_time" field.
+func ExpiredTimeIsNil() predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldExpiredTime)))
+	})
+}
+
+// ExpiredTimeNotNil applies the NotNil predicate on the "expired_time" field.
+func ExpiredTimeNotNil() predicate.Card {
+	return predicate.Card(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldExpiredTime)))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Card {
 	return predicate.Card(func(s *sql.Selector) {
