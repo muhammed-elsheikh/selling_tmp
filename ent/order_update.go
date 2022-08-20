@@ -81,6 +81,20 @@ func (ou *OrderUpdate) SetOrderDate(t time.Time) *OrderUpdate {
 	return ou
 }
 
+// SetNillableOrderDate sets the "order_date" field if the given value is not nil.
+func (ou *OrderUpdate) SetNillableOrderDate(t *time.Time) *OrderUpdate {
+	if t != nil {
+		ou.SetOrderDate(*t)
+	}
+	return ou
+}
+
+// ClearOrderDate clears the value of the "order_date" field.
+func (ou *OrderUpdate) ClearOrderDate() *OrderUpdate {
+	ou.mutation.ClearOrderDate()
+	return ou
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (ou *OrderUpdate) SetUpdatedAt(t time.Time) *OrderUpdate {
 	ou.mutation.SetUpdatedAt(t)
@@ -272,6 +286,12 @@ func (ou *OrderUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: order.FieldOrderDate,
 		})
 	}
+	if ou.mutation.OrderDateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: order.FieldOrderDate,
+		})
+	}
 	if value, ok := ou.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -416,6 +436,20 @@ func (ouo *OrderUpdateOne) AddTotal(f float64) *OrderUpdateOne {
 // SetOrderDate sets the "order_date" field.
 func (ouo *OrderUpdateOne) SetOrderDate(t time.Time) *OrderUpdateOne {
 	ouo.mutation.SetOrderDate(t)
+	return ouo
+}
+
+// SetNillableOrderDate sets the "order_date" field if the given value is not nil.
+func (ouo *OrderUpdateOne) SetNillableOrderDate(t *time.Time) *OrderUpdateOne {
+	if t != nil {
+		ouo.SetOrderDate(*t)
+	}
+	return ouo
+}
+
+// ClearOrderDate clears the value of the "order_date" field.
+func (ouo *OrderUpdateOne) ClearOrderDate() *OrderUpdateOne {
+	ouo.mutation.ClearOrderDate()
 	return ouo
 }
 
@@ -637,6 +671,12 @@ func (ouo *OrderUpdateOne) sqlSave(ctx context.Context) (_node *Order, err error
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
+			Column: order.FieldOrderDate,
+		})
+	}
+	if ouo.mutation.OrderDateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
 			Column: order.FieldOrderDate,
 		})
 	}

@@ -482,6 +482,20 @@ func OrderDateLTE(v time.Time) predicate.Order {
 	})
 }
 
+// OrderDateIsNil applies the IsNil predicate on the "order_date" field.
+func OrderDateIsNil() predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldOrderDate)))
+	})
+}
+
+// OrderDateNotNil applies the NotNil predicate on the "order_date" field.
+func OrderDateNotNil() predicate.Order {
+	return predicate.Order(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldOrderDate)))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Order {
 	return predicate.Order(func(s *sql.Selector) {

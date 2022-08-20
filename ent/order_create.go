@@ -52,6 +52,14 @@ func (oc *OrderCreate) SetOrderDate(t time.Time) *OrderCreate {
 	return oc
 }
 
+// SetNillableOrderDate sets the "order_date" field if the given value is not nil.
+func (oc *OrderCreate) SetNillableOrderDate(t *time.Time) *OrderCreate {
+	if t != nil {
+		oc.SetOrderDate(*t)
+	}
+	return oc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (oc *OrderCreate) SetCreatedAt(t time.Time) *OrderCreate {
 	oc.mutation.SetCreatedAt(t)
@@ -204,9 +212,6 @@ func (oc *OrderCreate) check() error {
 	}
 	if _, ok := oc.mutation.Total(); !ok {
 		return &ValidationError{Name: "total", err: errors.New(`ent: missing required field "Order.total"`)}
-	}
-	if _, ok := oc.mutation.OrderDate(); !ok {
-		return &ValidationError{Name: "order_date", err: errors.New(`ent: missing required field "Order.order_date"`)}
 	}
 	if _, ok := oc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Order.created_at"`)}

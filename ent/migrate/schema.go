@@ -37,7 +37,7 @@ var (
 		{Name: "user_id", Type: field.TypeInt},
 		{Name: "quantity", Type: field.TypeInt},
 		{Name: "total", Type: field.TypeFloat64},
-		{Name: "order_date", Type: field.TypeTime},
+		{Name: "order_date", Type: field.TypeTime, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "product_id", Type: field.TypeInt},

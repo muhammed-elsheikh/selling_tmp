@@ -20,7 +20,7 @@ func (Order) Fields() []ent.Field {
 		field.Int("product_id"),
 		field.Int("quantity"),
 		field.Float("total"),
-		field.Time("order_date"),
+		field.Time("order_date").Optional(),
 		field.Time("created_at").Default(time.Now).Immutable(),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
