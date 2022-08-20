@@ -2,7 +2,6 @@ package users
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"selling_tmp/db"
 	"selling_tmp/ent"
@@ -13,25 +12,19 @@ import (
 
 // get users with params(name, age)
 func getUsers(c *gin.Context) {
-	name := c.Param("name")
-	age := c.Param("age")
-	c.JSON(http.StatusOK, gin.H{
-		"name": name,
-		"age":  age,
-	})
-}
+	var outputs *ent.User
 
-// post user with body request
-func postUser(c *gin.Context) {
-	body := c.Request.Body
-	value, err := ioutil.ReadAll(body)
+	if err := c.BindJSON(&outputs); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	user, err := db.Client.User.Query().All(c)
 	if err != nil {
 		fmt.Println(err.Error())
+		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": string(value),
-	})
+	c.JSON(http.StatusOK, user)
 }
 
 func register(c *gin.Context) {
@@ -68,7 +61,10 @@ func login(c *gin.Context) {
 
 	user, err := db.Client.User.
 		Query().
-		Where(user.Email(inputs.Email)).
+		Where(
+			user.Email(inputs.Email),
+			user.ID(inputs.ID),
+		).
 		First(c)
 
 	if err != nil {
@@ -82,8 +78,7 @@ func login(c *gin.Context) {
 
 func AddRoutes(parentRoute *gin.Engine) {
 	route := parentRoute.Group("/users")
-	route.GET("/:name/:msg", getUsers)
-	route.POST("/", postUser)
+	route.GET("/all", getUsers)
 	route.POST("/register", register)
 	route.POST("/login", login)
 }
