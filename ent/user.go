@@ -32,8 +32,6 @@ type User struct {
 	NationalID string `json:"national_id,omitempty"`
 	// LocalAddress holds the value of the "local_address" field.
 	LocalAddress string `json:"local_address,omitempty"`
-	// CardID holds the value of the "card_id" field.
-	CardID int `json:"card_id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -77,7 +75,7 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldAge, user.FieldCardID:
+		case user.FieldID, user.FieldAge:
 			values[i] = new(sql.NullInt64)
 		case user.FieldName, user.FieldUsername, user.FieldPassword, user.FieldEmail, user.FieldPhone, user.FieldNationalID, user.FieldLocalAddress:
 			values[i] = new(sql.NullString)
@@ -152,12 +150,6 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				u.LocalAddress = value.String
 			}
-		case user.FieldCardID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field card_id", values[i])
-			} else if value.Valid {
-				u.CardID = int(value.Int64)
-			}
 		case user.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -230,9 +222,6 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("local_address=")
 	builder.WriteString(u.LocalAddress)
-	builder.WriteString(", ")
-	builder.WriteString("card_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.CardID))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(u.CreatedAt.Format(time.ANSIC))

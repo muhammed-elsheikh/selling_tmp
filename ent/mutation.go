@@ -2418,8 +2418,6 @@ type UserMutation struct {
 	phone         *string
 	national_id   *string
 	local_address *string
-	card_id       *int
-	addcard_id    *int
 	created_at    *time.Time
 	updated_at    *time.Time
 	clearedFields map[string]struct{}
@@ -2905,76 +2903,6 @@ func (m *UserMutation) ResetLocalAddress() {
 	delete(m.clearedFields, user.FieldLocalAddress)
 }
 
-// SetCardID sets the "card_id" field.
-func (m *UserMutation) SetCardID(i int) {
-	m.card_id = &i
-	m.addcard_id = nil
-}
-
-// CardID returns the value of the "card_id" field in the mutation.
-func (m *UserMutation) CardID() (r int, exists bool) {
-	v := m.card_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCardID returns the old "card_id" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldCardID(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCardID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCardID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCardID: %w", err)
-	}
-	return oldValue.CardID, nil
-}
-
-// AddCardID adds i to the "card_id" field.
-func (m *UserMutation) AddCardID(i int) {
-	if m.addcard_id != nil {
-		*m.addcard_id += i
-	} else {
-		m.addcard_id = &i
-	}
-}
-
-// AddedCardID returns the value that was added to the "card_id" field in this mutation.
-func (m *UserMutation) AddedCardID() (r int, exists bool) {
-	v := m.addcard_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearCardID clears the value of the "card_id" field.
-func (m *UserMutation) ClearCardID() {
-	m.card_id = nil
-	m.addcard_id = nil
-	m.clearedFields[user.FieldCardID] = struct{}{}
-}
-
-// CardIDCleared returns if the "card_id" field was cleared in this mutation.
-func (m *UserMutation) CardIDCleared() bool {
-	_, ok := m.clearedFields[user.FieldCardID]
-	return ok
-}
-
-// ResetCardID resets all changes to the "card_id" field.
-func (m *UserMutation) ResetCardID() {
-	m.card_id = nil
-	m.addcard_id = nil
-	delete(m.clearedFields, user.FieldCardID)
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (m *UserMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -3174,7 +3102,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 10)
 	if m.name != nil {
 		fields = append(fields, user.FieldName)
 	}
@@ -3198,9 +3126,6 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.local_address != nil {
 		fields = append(fields, user.FieldLocalAddress)
-	}
-	if m.card_id != nil {
-		fields = append(fields, user.FieldCardID)
 	}
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
@@ -3232,8 +3157,6 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.NationalID()
 	case user.FieldLocalAddress:
 		return m.LocalAddress()
-	case user.FieldCardID:
-		return m.CardID()
 	case user.FieldCreatedAt:
 		return m.CreatedAt()
 	case user.FieldUpdatedAt:
@@ -3263,8 +3186,6 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldNationalID(ctx)
 	case user.FieldLocalAddress:
 		return m.OldLocalAddress(ctx)
-	case user.FieldCardID:
-		return m.OldCardID(ctx)
 	case user.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case user.FieldUpdatedAt:
@@ -3334,13 +3255,6 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLocalAddress(v)
 		return nil
-	case user.FieldCardID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCardID(v)
-		return nil
 	case user.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -3366,9 +3280,6 @@ func (m *UserMutation) AddedFields() []string {
 	if m.addage != nil {
 		fields = append(fields, user.FieldAge)
 	}
-	if m.addcard_id != nil {
-		fields = append(fields, user.FieldCardID)
-	}
 	return fields
 }
 
@@ -3379,8 +3290,6 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case user.FieldAge:
 		return m.AddedAge()
-	case user.FieldCardID:
-		return m.AddedCardID()
 	}
 	return nil, false
 }
@@ -3396,13 +3305,6 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddAge(v)
-		return nil
-	case user.FieldCardID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddCardID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown User numeric field %s", name)
@@ -3426,9 +3328,6 @@ func (m *UserMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(user.FieldLocalAddress) {
 		fields = append(fields, user.FieldLocalAddress)
-	}
-	if m.FieldCleared(user.FieldCardID) {
-		fields = append(fields, user.FieldCardID)
 	}
 	return fields
 }
@@ -3458,9 +3357,6 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldLocalAddress:
 		m.ClearLocalAddress()
-		return nil
-	case user.FieldCardID:
-		m.ClearCardID()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -3493,9 +3389,6 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldLocalAddress:
 		m.ResetLocalAddress()
-		return nil
-	case user.FieldCardID:
-		m.ResetCardID()
 		return nil
 	case user.FieldCreatedAt:
 		m.ResetCreatedAt()

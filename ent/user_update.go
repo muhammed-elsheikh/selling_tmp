@@ -155,33 +155,6 @@ func (uu *UserUpdate) ClearLocalAddress() *UserUpdate {
 	return uu
 }
 
-// SetCardID sets the "card_id" field.
-func (uu *UserUpdate) SetCardID(i int) *UserUpdate {
-	uu.mutation.ResetCardID()
-	uu.mutation.SetCardID(i)
-	return uu
-}
-
-// SetNillableCardID sets the "card_id" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableCardID(i *int) *UserUpdate {
-	if i != nil {
-		uu.SetCardID(*i)
-	}
-	return uu
-}
-
-// AddCardID adds i to the "card_id" field.
-func (uu *UserUpdate) AddCardID(i int) *UserUpdate {
-	uu.mutation.AddCardID(i)
-	return uu
-}
-
-// ClearCardID clears the value of the "card_id" field.
-func (uu *UserUpdate) ClearCardID() *UserUpdate {
-	uu.mutation.ClearCardID()
-	return uu
-}
-
 // SetUpdatedAt sets the "updated_at" field.
 func (uu *UserUpdate) SetUpdatedAt(t time.Time) *UserUpdate {
 	uu.mutation.SetUpdatedAt(t)
@@ -460,26 +433,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldLocalAddress,
 		})
 	}
-	if value, ok := uu.mutation.CardID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldCardID,
-		})
-	}
-	if value, ok := uu.mutation.AddedCardID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldCardID,
-		})
-	}
-	if uu.mutation.CardIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Column: user.FieldCardID,
-		})
-	}
 	if value, ok := uu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -736,33 +689,6 @@ func (uuo *UserUpdateOne) SetNillableLocalAddress(s *string) *UserUpdateOne {
 // ClearLocalAddress clears the value of the "local_address" field.
 func (uuo *UserUpdateOne) ClearLocalAddress() *UserUpdateOne {
 	uuo.mutation.ClearLocalAddress()
-	return uuo
-}
-
-// SetCardID sets the "card_id" field.
-func (uuo *UserUpdateOne) SetCardID(i int) *UserUpdateOne {
-	uuo.mutation.ResetCardID()
-	uuo.mutation.SetCardID(i)
-	return uuo
-}
-
-// SetNillableCardID sets the "card_id" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableCardID(i *int) *UserUpdateOne {
-	if i != nil {
-		uuo.SetCardID(*i)
-	}
-	return uuo
-}
-
-// AddCardID adds i to the "card_id" field.
-func (uuo *UserUpdateOne) AddCardID(i int) *UserUpdateOne {
-	uuo.mutation.AddCardID(i)
-	return uuo
-}
-
-// ClearCardID clears the value of the "card_id" field.
-func (uuo *UserUpdateOne) ClearCardID() *UserUpdateOne {
-	uuo.mutation.ClearCardID()
 	return uuo
 }
 
@@ -1072,26 +998,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: user.FieldLocalAddress,
-		})
-	}
-	if value, ok := uuo.mutation.CardID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldCardID,
-		})
-	}
-	if value, ok := uuo.mutation.AddedCardID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldCardID,
-		})
-	}
-	if uuo.mutation.CardIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Column: user.FieldCardID,
 		})
 	}
 	if value, ok := uuo.mutation.UpdatedAt(); ok {

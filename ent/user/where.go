@@ -137,13 +137,6 @@ func LocalAddress(v string) predicate.User {
 	})
 }
 
-// CardID applies equality check predicate on the "card_id" field. It's identical to CardIDEQ.
-func CardID(v int) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCardID), v))
-	})
-}
-
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -1078,96 +1071,6 @@ func LocalAddressEqualFold(v string) predicate.User {
 func LocalAddressContainsFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldLocalAddress), v))
-	})
-}
-
-// CardIDEQ applies the EQ predicate on the "card_id" field.
-func CardIDEQ(v int) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDNEQ applies the NEQ predicate on the "card_id" field.
-func CardIDNEQ(v int) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDIn applies the In predicate on the "card_id" field.
-func CardIDIn(vs ...int) predicate.User {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.User(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.In(s.C(FieldCardID), v...))
-	})
-}
-
-// CardIDNotIn applies the NotIn predicate on the "card_id" field.
-func CardIDNotIn(vs ...int) predicate.User {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.User(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.NotIn(s.C(FieldCardID), v...))
-	})
-}
-
-// CardIDGT applies the GT predicate on the "card_id" field.
-func CardIDGT(v int) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDGTE applies the GTE predicate on the "card_id" field.
-func CardIDGTE(v int) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDLT applies the LT predicate on the "card_id" field.
-func CardIDLT(v int) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDLTE applies the LTE predicate on the "card_id" field.
-func CardIDLTE(v int) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCardID), v))
-	})
-}
-
-// CardIDIsNil applies the IsNil predicate on the "card_id" field.
-func CardIDIsNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldCardID)))
-	})
-}
-
-// CardIDNotNil applies the NotNil predicate on the "card_id" field.
-func CardIDNotNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldCardID)))
 	})
 }
 

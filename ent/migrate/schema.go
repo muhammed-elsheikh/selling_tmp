@@ -92,7 +92,6 @@ var (
 		{Name: "phone", Type: field.TypeString, Nullable: true},
 		{Name: "national_id", Type: field.TypeString, Nullable: true},
 		{Name: "local_address", Type: field.TypeString, Nullable: true},
-		{Name: "card_id", Type: field.TypeInt, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}

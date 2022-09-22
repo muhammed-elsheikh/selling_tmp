@@ -110,20 +110,6 @@ func (uc *UserCreate) SetNillableLocalAddress(s *string) *UserCreate {
 	return uc
 }
 
-// SetCardID sets the "card_id" field.
-func (uc *UserCreate) SetCardID(i int) *UserCreate {
-	uc.mutation.SetCardID(i)
-	return uc
-}
-
-// SetNillableCardID sets the "card_id" field if the given value is not nil.
-func (uc *UserCreate) SetNillableCardID(i *int) *UserCreate {
-	if i != nil {
-		uc.SetCardID(*i)
-	}
-	return uc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (uc *UserCreate) SetCreatedAt(t time.Time) *UserCreate {
 	uc.mutation.SetCreatedAt(t)
@@ -386,14 +372,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldLocalAddress,
 		})
 		_node.LocalAddress = value
-	}
-	if value, ok := uc.mutation.CardID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldCardID,
-		})
-		_node.CardID = value
 	}
 	if value, ok := uc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

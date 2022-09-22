@@ -24,7 +24,6 @@ func (User) Fields() []ent.Field {
 		field.String("phone").Optional(),
 		field.String("national_id").Optional(),
 		field.String("local_address").Optional(),
-		field.Int("card_id").Optional(),
 		field.Time("created_at").Default(time.Now).Immutable(),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}

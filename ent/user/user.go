@@ -27,8 +27,6 @@ const (
 	FieldNationalID = "national_id"
 	// FieldLocalAddress holds the string denoting the local_address field in the database.
 	FieldLocalAddress = "local_address"
-	// FieldCardID holds the string denoting the card_id field in the database.
-	FieldCardID = "card_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -66,7 +64,6 @@ var Columns = []string{
 	FieldPhone,
 	FieldNationalID,
 	FieldLocalAddress,
-	FieldCardID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
