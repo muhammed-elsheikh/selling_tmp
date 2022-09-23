@@ -40,6 +40,10 @@ func SeedCard(c context.Context) error {
 			SetNumber(card.Number)
 	}
 	_, err = db.Client.Card.CreateBulk(bulk...).Save(c)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	fmt.Println("Successfully Created Cards")
 
 	return nil
