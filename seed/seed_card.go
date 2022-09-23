@@ -26,8 +26,8 @@ func SeedCard(c context.Context) error {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	for _, cd := range cardJSON {
+	bulk := make([]*ent.CardCreate, len(cardJSON))
+	for i, cd := range cardJSON {
 		var card ent.Card
 		err := mapstructure.Decode(cd, &card)
 
@@ -35,11 +35,11 @@ func SeedCard(c context.Context) error {
 			fmt.Println(err.Error())
 		}
 
-		db.Client.Card.Create().
+		bulk[i] = db.Client.Card.Create().
 			SetUserID(card.UserID).
-			SetNumber(card.Number).
-			SaveX(c)
+			SetNumber(card.Number)
 	}
+	_, err = db.Client.Card.CreateBulk(bulk...).Save(c)
 	fmt.Println("Successfully Created Cards")
 
 	return nil

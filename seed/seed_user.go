@@ -28,14 +28,14 @@ func SeedUser(ctx context.Context) error {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	for _, u := range usersJSON {
+	bulk := make([]*ent.UserCreate, len(usersJSON))
+	for i, u := range usersJSON {
 		var user ent.User
 		err := mapstructure.Decode(u, &user)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		db.Client.User.Create().
+		bulk[i] = db.Client.User.Create().
 			SetName(user.Name).
 			SetUsername(user.Username).
 			SetPassword(user.Password).
@@ -43,9 +43,14 @@ func SeedUser(ctx context.Context) error {
 			SetAge(user.Age).
 			SetPhone(user.Phone).
 			SetNationalID(user.NationalID).
-			SetLocalAddress(user.LocalAddress).
-			SaveX(ctx)
+			SetLocalAddress(user.LocalAddress)
 	}
+	_, err = db.Client.User.CreateBulk(bulk...).Save(ctx)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	fmt.Println("Successfully Created")
 
 	return nil
