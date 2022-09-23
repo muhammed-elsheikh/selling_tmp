@@ -1,17 +1,18 @@
 package main
 
 import (
-	"context"
 	"selling_tmp/api"
 	_ "selling_tmp/ent/runtime"
-	"selling_tmp/seed"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 
-	seed.Do(context.Background())
+	// seed.SeedUser(context.Background())
+	// seed.SeedCard(context.Background())
+	// seed.SeedProduct(context.Background())
+	// seed.SeedOrder(context.Background())
 
 	router := gin.Default()
 
